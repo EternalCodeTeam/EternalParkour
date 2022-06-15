@@ -55,23 +55,14 @@ public class ConfigurationManager {
                 .orThrow(RuntimeException::new);
     }
 
-    private <T extends ConfigWithResource> void render(T config) {
+    public <T extends ConfigWithResource> void render(T config) {
         this.CDN.render(config, config.getResource())
                 .orThrow(RuntimeException::new);
     }
 
-    public Map<String, String> getMessagesByLanguage(MessageLanguage language){
-        return PandaStream.of(
-                messageConfiguration.messages.entrySet()
-        )
-                .find(langEntrySet -> langEntrySet.getKey() == language)
-                .map(Map.Entry::getValue)
-                .get();
+    public <T extends ConfigWithResource> void load(T config) {
+        this.CDN.load(config.getResource(), config)
+        	.orThrow(RuntimeException::new);
     }
 
-    public Option<String> getByKey(String key, MessageLanguage language){
-        return PandaStream.of(getMessagesByLanguage(language).entrySet())
-                .find(o -> o.getKey().equalsIgnoreCase(key))
-                .map(Map.Entry::getValue);
-    }
 }

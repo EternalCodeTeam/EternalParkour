@@ -4,6 +4,7 @@ import net.eternalcode.eternalparkour.EternalParkourPlugin;
 import net.eternalcode.eternalparkour.configuration.ConfigurationManager;
 import net.eternalcode.eternalparkour.configuration.model.MessageConfigurationModel;
 import net.eternalcode.eternalparkour.feature.message.MessageLanguage;
+import net.eternalcode.eternalparkour.feature.message.StandardMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,9 +18,6 @@ import java.util.Map;
 public class PlayerJoinListener implements Listener{
 
     private final EternalParkourPlugin plugin = EternalParkourPlugin.getPluginInstance();
-    private final ConfigurationManager configurationManager =
-            plugin.getConfigurationManager();
-
 
 
     @EventHandler

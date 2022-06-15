@@ -8,6 +8,7 @@ import lombok.Getter;
 import net.eternalcode.eternalparkour.command.base.InvalidCommandUsageHandler;
 import net.eternalcode.eternalparkour.command.base.PermissionMessageHandler;
 import net.eternalcode.eternalparkour.configuration.ConfigurationManager;
+import net.eternalcode.eternalparkour.database.DatabaseManager;
 import net.eternalcode.eternalparkour.feature.listener.PlayerJoinListener;
 import net.eternalcode.eternalparkour.feature.user.UserFactory;
 import net.eternalcode.eternalparkour.feature.user.UserManager;
@@ -32,6 +33,8 @@ public class EternalParkourPlugin extends JavaPlugin {
     private UserManager userManager;
     private UserFactory userFactory;
 
+    private DatabaseManager databaseManager;
+
     @Override
     public void onEnable() {
         pluginInstance = this;
@@ -42,6 +45,9 @@ public class EternalParkourPlugin extends JavaPlugin {
         this.configurationManager = new ConfigurationManager();
 
         configurationManager.init();
+
+        this.databaseManager = new DatabaseManager();
+        databaseManager.prepareConnection();
 
 
         initializeListeners();
