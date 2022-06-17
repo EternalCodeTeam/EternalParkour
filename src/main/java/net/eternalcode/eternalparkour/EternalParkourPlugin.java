@@ -7,11 +7,15 @@ import dev.rollczi.litecommands.bukkit.tools.BukkitPlayerArgument;
 import lombok.Getter;
 import net.eternalcode.eternalparkour.command.base.InvalidCommandUsageHandler;
 import net.eternalcode.eternalparkour.command.base.PermissionMessageHandler;
+import net.eternalcode.eternalparkour.command.implementation.ConfigurationCommand;
 import net.eternalcode.eternalparkour.configuration.ConfigurationManager;
 import net.eternalcode.eternalparkour.database.DatabaseManager;
-import net.eternalcode.eternalparkour.feature.listener.PlayerJoinListener;
-import net.eternalcode.eternalparkour.feature.user.UserFactory;
-import net.eternalcode.eternalparkour.feature.user.UserManager;
+import net.eternalcode.eternalparkour.listener.PlayerChatListener;
+import net.eternalcode.eternalparkour.listener.PlayerJoinListener;
+import net.eternalcode.eternalparkour.feature.task.UserUpdateTask;
+import net.eternalcode.eternalparkour.user.UserDatabaseManager;
+import net.eternalcode.eternalparkour.user.UserFactory;
+import net.eternalcode.eternalparkour.user.UserManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,8 +36,17 @@ public class EternalParkourPlugin extends JavaPlugin {
 
     private UserManager userManager;
     private UserFactory userFactory;
+    private UserDatabaseManager userDatabaseManager;
 
     private DatabaseManager databaseManager;
+
+    private UserUpdateTask userUpdateTask;
+
+    @Override
+    public void onDisable() {
+        this.userDatabaseManager = new UserDatabaseManager();
+        userDatabaseManager.saveUsers();
+    }
 
     @Override
     public void onEnable() {
@@ -50,8 +63,15 @@ public class EternalParkourPlugin extends JavaPlugin {
         databaseManager.prepareConnection();
 
 
+
+
         initializeListeners();
         initializeCommands();
+
+        this.userDatabaseManager = new UserDatabaseManager();
+        userDatabaseManager.loadUsers();
+
+        this.userUpdateTask = new UserUpdateTask();
     }
 
 
@@ -61,7 +81,8 @@ public class EternalParkourPlugin extends JavaPlugin {
 
     private void initializeListeners(){
         PandaStream.of(
-                new PlayerJoinListener()
+                new PlayerJoinListener(),
+                new PlayerChatListener()
         ).forEach(l ->
                 this.getServer().getPluginManager().registerEvents(l, this));
     }
@@ -76,6 +97,10 @@ public class EternalParkourPlugin extends JavaPlugin {
                 .invalidUsageHandler(new InvalidCommandUsageHandler())
 
                 .permissionHandler(new PermissionMessageHandler())
+
+                .typeBind(ConfigurationManager.class, () -> configurationManager)
+
+                .command(ConfigurationCommand.class)
 
                 .register();
     }

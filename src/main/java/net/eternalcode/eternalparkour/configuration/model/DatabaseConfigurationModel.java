@@ -1,24 +1,27 @@
 package net.eternalcode.eternalparkour.configuration.model;
 
-import com.j256.ormlite.db.DatabaseType;
 import net.dzikoysk.cdn.entity.Description;
 import net.eternalcode.eternalparkour.configuration.AbstractConfigWithResource;
-import net.eternalcode.eternalparkour.database.DatabaseObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
 public class DatabaseConfigurationModel extends AbstractConfigWithResource {
+    private final static Logger LOGGER = LogManager.getLogger(DatabaseConfigurationModel.class);
+
+
     public DatabaseConfigurationModel(File folder, String child) {
         super(folder, child);
+
+        LOGGER.info("initializing database configuration...");
     }
 
     @Description("Database configuration model for the database configuration")
-    public DatabaseObject databaseObject = DatabaseObject
-            .builder()
-            .url("url")
-            .username("username")
-            .password("password")
-            .build();
 
+    public String url = "url";
 
+    public String username = "username";
+
+    public String password = "password";
 }

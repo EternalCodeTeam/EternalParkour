@@ -34,17 +34,17 @@ public class DatabaseManager {
 
 
         this.connection = DriverManager.getConnection(
-                databaseConfigurationModel.databaseObject
-                        .getUrl(),
-                databaseConfigurationModel.databaseObject
-                        .getUsername(),
-                databaseConfigurationModel
-                        .databaseObject
-                        .getPassword()
+                databaseConfigurationModel.url,
+                databaseConfigurationModel.username,
+                databaseConfigurationModel.password
         );
 
         if(connection != null) {
             LOGGER.info("Connection is established");
         }
+    }
+
+    public void prepareDefaultTables(){
+
     }
 }

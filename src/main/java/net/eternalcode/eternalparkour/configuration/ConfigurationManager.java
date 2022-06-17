@@ -4,16 +4,12 @@ import lombok.Getter;
 import net.dzikoysk.cdn.Cdn;
 import net.dzikoysk.cdn.CdnFactory;
 import net.eternalcode.eternalparkour.EternalParkourPlugin;
+import net.eternalcode.eternalparkour.configuration.model.ChatConfigurationModel;
 import net.eternalcode.eternalparkour.configuration.model.DatabaseConfigurationModel;
 import net.eternalcode.eternalparkour.configuration.model.MessageConfigurationModel;
-import net.eternalcode.eternalparkour.feature.message.MessageLanguage;
-import org.apache.commons.lang.Validate;
-import org.bukkit.entity.Panda;
-import panda.std.Option;
 import panda.std.stream.PandaStream;
 
 import java.io.File;
-import java.util.Map;
 
 @Getter
 public class ConfigurationManager {
@@ -27,21 +23,20 @@ public class ConfigurationManager {
 
     private final File dataFolder = eternalParkourPlugin.getDataFolder();
 
-    private MessageConfigurationModel messageConfiguration;
-    private DatabaseConfigurationModel databaseConfiguration;
+    private final MessageConfigurationModel messageConfiguration = new MessageConfigurationModel(dataFolder, "messages.yml");
+    private final DatabaseConfigurationModel databaseConfiguration = new DatabaseConfigurationModel(dataFolder, "database.yml");
+    private final ChatConfigurationModel chatConfiguration = new ChatConfigurationModel(dataFolder, "chat.yml");
 
 
     public void init(){
-        this.messageConfiguration = new MessageConfigurationModel(dataFolder, "messages.yml");
-        this.databaseConfiguration = new DatabaseConfigurationModel(dataFolder, "database.yml");
-
         loadAndRender();
     }
 
     private void loadAndRender(){
         PandaStream.of(
                 messageConfiguration,
-                databaseConfiguration
+                databaseConfiguration,
+                chatConfiguration
                 )
                 .forEach(this::loadAndRender);
     }

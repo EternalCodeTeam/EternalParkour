@@ -1,5 +1,7 @@
 package net.eternalcode.eternalparkour.database;
 
+import java.util.List;
+
 public interface DataRepository<T, I> {
     void update(T data);
 
@@ -8,4 +10,8 @@ public interface DataRepository<T, I> {
     void insert(T data);
 
     T select(I id);
+
+    List<T> selectAll();
+
+    void createTable();
 }
