@@ -5,9 +5,12 @@ import net.eternalcode.eternalparkour.EternalParkourPlugin;
 import net.eternalcode.eternalparkour.database.DataRepository;
 import net.eternalcode.eternalparkour.database.DatabaseManager;
 import net.eternalcode.eternalparkour.message.MessageLanguage;
+import org.apache.commons.lang.Validate;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -137,22 +140,22 @@ public class UserDataRepository implements DataRepository<User, UUID> {
 
     @SneakyThrows
     @Override
-    public void createTable() {
-        String tableQuery = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " " +
-                "(" +
-                "uuid varchar(255) NOT NULL," +
-                "coins INT NOT NULL," +
-                "level INT NOT NULL," +
-                "username varchar(255) NOT NULL," +
-                "xp DOUBLE NOT NULL," +
-                "language varchar(255) NOT NULL," +
-                "PRIMARY KEY (uuid)"
-                + ")";
+    public void createTable(Connection connection) {
+        Validate.notNull(connection);
 
-        PreparedStatement statement = databaseManager
-                .getConnection()
-                .prepareStatement(tableQuery);
+        String tableQuery = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME
+                + "("
+                + "uuid VARCHAR(64) NOT NULL PRIMARY KEY,"
+                + "username VARCHAR(255),"
+                + "coins INT,"
+                + "level INT,"
+                + "xp DOUBLE,"
+                + "language VARCHAR(3)"
+                + ");";
 
-        statement.execute();
+        Statement statement =
+                connection.createStatement();
+
+        statement.executeUpdate(tableQuery);
     }
 }

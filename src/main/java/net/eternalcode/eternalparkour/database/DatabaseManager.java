@@ -3,8 +3,13 @@ package net.eternalcode.eternalparkour.database;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.eternalcode.eternalparkour.EternalParkourPlugin;
+import net.eternalcode.eternalparkour.block.failblock.FailBlockDataRepository;
+import net.eternalcode.eternalparkour.block.locationblock.ParkourBlockDataRepository;
 import net.eternalcode.eternalparkour.configuration.ConfigurationManager;
 import net.eternalcode.eternalparkour.configuration.model.DatabaseConfigurationModel;
+import net.eternalcode.eternalparkour.parkour.ParkourDataRepository;
+import net.eternalcode.eternalparkour.score.UserScoreDataRepository;
+import net.eternalcode.eternalparkour.user.UserDataRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +22,12 @@ public class DatabaseManager {
 
     private final static String DBDRIVER = "com.mysql.jdbc.Driver";
     private final static Logger LOGGER = LogManager.getLogger(DatabaseManager.class);
+
+    private final ParkourDataRepository parkourDataRepository = new ParkourDataRepository();
+    private final UserDataRepository userDataRepository = new UserDataRepository();
+    private final UserScoreDataRepository userScoreDataRepository = new UserScoreDataRepository();
+    private final FailBlockDataRepository failBlockDataRepository = new FailBlockDataRepository();
+    private final ParkourBlockDataRepository parkourBlockDataRepository = new ParkourBlockDataRepository();
 
     private Connection connection;
 
@@ -42,9 +53,16 @@ public class DatabaseManager {
         if(connection != null) {
             LOGGER.info("Connection is established");
         }
+
+        createTables();
     }
 
-    public void prepareDefaultTables(){
 
+    private void createTables(){
+        userDataRepository.createTable(connection);
+        parkourDataRepository.createTable(connection);
+        userScoreDataRepository.createTable(connection);
+        parkourBlockDataRepository.createTable(connection);
+        failBlockDataRepository.createTable(connection);
     }
 }

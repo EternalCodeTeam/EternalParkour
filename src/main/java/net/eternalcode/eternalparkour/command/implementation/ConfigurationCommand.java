@@ -7,7 +7,7 @@ import net.eternalcode.eternalparkour.util.ChatUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.bukkit.entity.Player;
 
-@Section(route = "parkour")
+@Section(route = "parkour", aliases = "pk")
 public class ConfigurationCommand {
 
     private final StopWatch stopWatch = new StopWatch();

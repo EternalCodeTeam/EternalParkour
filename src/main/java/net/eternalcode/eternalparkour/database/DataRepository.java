@@ -1,5 +1,6 @@
 package net.eternalcode.eternalparkour.database;
 
+import java.sql.Connection;
 import java.util.List;
 
 public interface DataRepository<T, I> {
@@ -13,5 +14,5 @@ public interface DataRepository<T, I> {
 
     List<T> selectAll();
 
-    void createTable();
+    void createTable(Connection connection);
 }

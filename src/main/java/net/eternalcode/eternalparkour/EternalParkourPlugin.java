@@ -6,13 +6,19 @@ import dev.rollczi.litecommands.bukkit.tools.BukkitOnlyPlayerContextual;
 import dev.rollczi.litecommands.bukkit.tools.BukkitPlayerArgument;
 import lombok.Getter;
 import net.eternalcode.eternalparkour.command.base.InvalidCommandUsageHandler;
+import net.eternalcode.eternalparkour.command.base.MessageLanguageArgument;
 import net.eternalcode.eternalparkour.command.base.PermissionMessageHandler;
 import net.eternalcode.eternalparkour.command.implementation.ConfigurationCommand;
+import net.eternalcode.eternalparkour.command.implementation.LanguageCommand;
 import net.eternalcode.eternalparkour.configuration.ConfigurationManager;
 import net.eternalcode.eternalparkour.database.DatabaseManager;
 import net.eternalcode.eternalparkour.listener.PlayerChatListener;
 import net.eternalcode.eternalparkour.listener.PlayerJoinListener;
 import net.eternalcode.eternalparkour.feature.task.UserUpdateTask;
+import net.eternalcode.eternalparkour.message.MessageLanguage;
+import net.eternalcode.eternalparkour.parkour.ParkourDatabaseManager;
+import net.eternalcode.eternalparkour.parkour.ParkourFactory;
+import net.eternalcode.eternalparkour.parkour.ParkourManager;
 import net.eternalcode.eternalparkour.user.UserDatabaseManager;
 import net.eternalcode.eternalparkour.user.UserFactory;
 import net.eternalcode.eternalparkour.user.UserManager;
@@ -38,6 +44,10 @@ public class EternalParkourPlugin extends JavaPlugin {
     private UserFactory userFactory;
     private UserDatabaseManager userDatabaseManager;
 
+    private ParkourManager parkourManager;
+    private ParkourFactory parkourFactory;
+    private ParkourDatabaseManager parkourDatabaseManager;
+
     private DatabaseManager databaseManager;
 
     private UserUpdateTask userUpdateTask;
@@ -55,6 +65,9 @@ public class EternalParkourPlugin extends JavaPlugin {
         this.userManager = new UserManager();
         this.userFactory = new UserFactory();
 
+        this.parkourManager = new ParkourManager();
+        this.parkourFactory = new ParkourFactory();
+
         this.configurationManager = new ConfigurationManager();
 
         configurationManager.init();
@@ -70,6 +83,8 @@ public class EternalParkourPlugin extends JavaPlugin {
 
         this.userDatabaseManager = new UserDatabaseManager();
         userDatabaseManager.loadUsers();
+
+        this.parkourDatabaseManager = new ParkourDatabaseManager();
 
         this.userUpdateTask = new UserUpdateTask();
     }
@@ -96,11 +111,15 @@ public class EternalParkourPlugin extends JavaPlugin {
 
                 .invalidUsageHandler(new InvalidCommandUsageHandler())
 
+
                 .permissionHandler(new PermissionMessageHandler())
 
                 .typeBind(ConfigurationManager.class, () -> configurationManager)
+                .typeBind(UserManager.class, () -> userManager)
 
-                .command(ConfigurationCommand.class)
+                .command(
+                        ConfigurationCommand.class,
+                        LanguageCommand.class)
 
                 .register();
     }
